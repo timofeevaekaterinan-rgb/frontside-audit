@@ -1,0 +1,1093 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="img/logo.svg" type="image/svg+xml">
+<title>Frontside — аудит сайта</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Display:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: отчёт свёрстан по брендбуку FRONTSIDE 2025 — белые листы, красные заголовки капсом с номером раздела и линией, модульные плашки со скосом 45°, паттерн с ромбами на стыках, стрелка ↘. Слева оглавление, справа колонка листа. */
+:root{
+  --red:#EF4836; --grey:#BBBDC0; --light:#F1F1F1; --black:#231F20; --white:#FFFFFF;
+  --bg:#FFFFFF; --sheet:#FFFFFF; --panel:#F1F1F1; --ink:#231F20; --ink-2:#6B6869; --rule:#231F20; --line:#DCDCDD; --line-2:#ECECEC;
+  --wf-fill:#F1F1F1; --wf-fill2:#E2E2E3; --wf-stroke:#BBBDC0; --wf-dark:#231F20; --wf-on-dark:#F1F1F1;
+  --on-red:#FFFFFF;
+  --cut:12px;
+  --f:"Wix Madefor Display","Segoe UI",system-ui,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#1B1819; --sheet:#231F20; --panel:#2E2A2B; --ink:#F1F1F1; --ink-2:#A9A7A8; --rule:#F1F1F1; --line:#3E393A; --line-2:#332F30;
+  --wf-fill:#2E2A2B; --wf-fill2:#3A3536; --wf-stroke:#5A5556; --wf-dark:#141213; --wf-on-dark:#F1F1F1; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1B1819; --sheet:#231F20; --panel:#2E2A2B; --ink:#F1F1F1; --ink-2:#A9A7A8; --rule:#F1F1F1; --line:#3E393A; --line-2:#332F30;
+  --wf-fill:#2E2A2B; --wf-fill2:#3A3536; --wf-stroke:#5A5556; --wf-dark:#141213; --wf-on-dark:#F1F1F1; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.6 var(--f);padding-inline:16px;padding-block:0 64px;font-variant-numeric:tabular-nums}
+h1,h2,h3,h4{text-wrap:balance;line-height:1.15;margin:0}
+p{margin:0 0 .8em}
+a{color:inherit}
+.mono{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.cut{clip-path:polygon(0 0,calc(100% - var(--cut)) 0,100% var(--cut),100% 100%,0 100%)}
+.arrow{display:inline-block;width:28px;height:28px}
+.arrow path{fill:none;stroke:currentColor;stroke-width:1.6}
+
+.layout{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:220px minmax(0,1fr);gap:72px}
+main{min-width:0;max-width:940px}
+
+/* Оглавление */
+.side{position:sticky;top:calc(env(safe-area-inset-top,0px) + 20px);align-self:start;max-height:calc(100vh - 40px);overflow:auto;padding-top:40px;font-size:13.5px}
+.side .logo-mini{display:block;width:46px;margin-bottom:26px;background:var(--white);padding:6px 7px}
+.side .part{font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--red);margin:26px 0 8px;padding-bottom:6px;border-bottom:1px solid var(--rule)}
+.side a{display:block;text-decoration:none;color:var(--ink-2);padding:5px 0;line-height:1.35}
+.side a:hover,.side a:focus-visible{color:var(--ink)}
+.side a b{font-weight:600;color:var(--ink);margin-right:6px}
+.side a.is-active{color:var(--ink);font-weight:600;text-decoration:underline;text-decoration-color:var(--red);text-decoration-thickness:2px;text-underline-offset:5px}
+.side a.is-active b{color:var(--red)}
+
+/* Обложка как в брендбуке */
+.cover{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,1fr);grid-template-rows:auto auto;gap:8px;padding-top:40px}
+.cover .c-logo{grid-column:1;padding:8px 0 40px}
+.cover .c-logo img{width:92px;display:block;background:var(--white);padding:10px 12px}
+.cover .c-tall{grid-column:2;grid-row:1/3;min-height:220px}
+
+
+.cover .c-red{grid-column:1;background:var(--red);color:var(--on-red);padding:34px 32px 26px;display:grid;gap:14px;position:relative}
+.cover h1{font-size:clamp(28px,4.4vw,48px);font-weight:600;text-transform:uppercase;letter-spacing:.005em;line-height:1.08}
+.cover .c-red p{margin:0;font-size:16px;max-width:52ch;opacity:.92}
+.cover .c-red .arrow{position:absolute;right:24px;bottom:22px;width:34px;height:34px}
+.stamp{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:10px;margin-bottom:24px;font-size:13px}
+.stamp div{background:var(--sheet);padding:12px 16px}
+.stamp span{display:block;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--red);margin-bottom:2px}
+
+/* Разделитель части: красная плашка + паттерн */
+.part-head{margin-top:128px;display:grid;grid-template-columns:minmax(0,2.2fr) minmax(0,1fr);gap:8px}
+.part-head .ph-red{background:var(--red);color:var(--on-red);padding:28px 30px 24px;position:relative;min-height:170px;display:grid;align-content:end;gap:6px}
+.part-head .pn{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.85}
+.part-head h2{font-size:clamp(30px,4.2vw,46px);font-weight:600;text-transform:uppercase;line-height:1.05}
+.part-head p{margin:4px 0 0;font-size:15.5px;max-width:56ch;opacity:.92}
+.part-head .arrow{position:absolute;right:20px;top:20px}
+.part-head .ph-pat{background-color:var(--grey);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Cpath d='M0 0H56V56H0Z' fill='none' stroke='%23ffffff' stroke-width='3'/%3E%3Cpath d='M0 -4L4 0L0 4L-4 0Z M56 -4L60 0L56 4L52 0Z M0 52L4 56L0 60L-4 56Z M56 52L60 56L56 60L52 56Z' fill='%23ffffff'/%3E%3C/svg%3E");background-size:56px 56px}
+
+/* Главы */
+section.ch{padding-top:80px}
+.ch-head{padding-bottom:16px;border-bottom:1px solid var(--rule);margin-bottom:24px}
+.ch-head .no,.ch-head h3{display:inline;font-size:clamp(22px,2.7vw,28px);font-weight:600;text-transform:uppercase;color:var(--red);letter-spacing:.005em}
+.ch-head .no::after{content:". "}
+.ch-lead{color:var(--ink);max-width:68ch;margin-bottom:36px;line-height:1.7}
+.sub{font-size:17px;font-weight:700;color:var(--red);margin:56px 0 18px}
+
+/* Коротко */
+.verdict{font-size:18px;line-height:1.7;max-width:66ch;margin-bottom:1.1em}
+.top5{counter-reset:t;list-style:none;padding:0;margin:40px 0 0;display:grid;gap:10px}
+.top5 li{background:var(--panel);padding:18px 22px 18px 72px;position:relative;font-size:15.5px}
+.top5 li::before{counter-increment:t;content:counter(t);position:absolute;left:0;top:0;bottom:0;width:46px;display:grid;place-items:center;background:var(--red);color:var(--on-red);font-weight:700;font-size:18px}
+.top5 li b{display:block}
+.top5 li span{color:var(--ink-2)}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:40px}
+.fact{background:var(--red);color:var(--on-red);padding:22px 22px 20px;min-height:136px;display:grid;align-content:space-between}
+.fact:nth-child(3n+2){background:var(--black);color:var(--light)}
+.fact:nth-child(3n){background:var(--grey);color:var(--black)}
+.fact b{display:block;font-size:30px;font-weight:600;letter-spacing:-.01em;line-height:1.05}
+.fact small{display:block;font-size:13px;line-height:1.35;margin-top:8px;opacity:.95}
+
+/* Метки приоритета — фирменные цвета + форма */
+.tag{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;width:116px;height:24px;line-height:1;flex:none;font-style:normal;font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:4px 10px 4px 6px;white-space:nowrap;clip-path:polygon(0 0,calc(100% - 7px) 0,100% 7px,100% 100%,0 100%)}
+.p0{background:var(--red);color:var(--on-red)}
+.p1{background:var(--black);color:var(--light)}
+:root[data-theme="dark"] .p1{background:var(--light);color:var(--black)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .p1{background:var(--light);color:var(--black)}}
+.p2{background:var(--grey);color:var(--black)}
+.legend{display:flex;flex-wrap:wrap;gap:12px 28px;margin:36px 0 8px;font-size:14px;color:var(--ink-2)}
+.legend span{display:flex;align-items:center;gap:8px}
+
+/* Находка */
+.f{background:var(--sheet);border:1px solid var(--line);border-top:3px solid var(--line);padding:24px 28px 14px;margin-bottom:24px;scroll-margin-top:20px}
+.f.i0{border-top-color:var(--red)} .f.i1{border-top-color:var(--ink)} .f.i2{border-top-color:var(--grey)}
+.f header{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-bottom:18px}
+.f .code{font-size:12px;font-weight:700;color:var(--red);border:1.5px solid var(--red);padding:1px 7px}
+.f h4{font-size:17px;font-weight:700;flex:1 1 300px;min-width:0;line-height:1.35}
+.f dl{display:grid;grid-template-columns:128px minmax(0,1fr);gap:14px 20px;margin:0 0 14px;font-size:15px;line-height:1.65}
+.f dt{font-size:13px;font-weight:700;color:var(--red);padding-top:1px}
+.f dd{margin:0;max-width:70ch}
+.f dd.do{font-weight:600}
+figure{margin:22px 0 22px}
+figure img{display:block;width:100%;height:auto;border:1px solid var(--line);background:var(--sheet)}
+figcaption{font-size:13px;color:var(--ink-2);margin-top:10px}
+figcaption b{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--red);margin-right:6px}
+.duo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:start}
+.duo figure{margin:22px 0 22px}
+.duo.phones{grid-template-columns:repeat(2,minmax(0,260px))}
+
+/* Оценки */
+.scores{border-top:1px solid var(--rule)}
+.score{display:grid;grid-template-columns:minmax(0,200px) 150px minmax(0,1fr);gap:8px 28px;padding:22px 0;border-bottom:1px solid var(--line)}
+.score h4{font-size:15.5px;font-weight:700}
+.meter{display:flex;gap:3px;padding-top:5px;align-items:center}
+.meter i{width:20px;height:10px;background:var(--light)}
+:root[data-theme="dark"] .meter i{background:var(--panel)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .meter i{background:var(--panel)}}
+.meter i.on{background:var(--red)}
+.meter i.half{background:linear-gradient(90deg,var(--red) 50%,var(--grey) 50%)}
+.meter em{font-style:normal;font-size:12.5px;font-weight:700;margin-left:8px}
+.score p{margin:0;font-size:14.5px;color:var(--ink-2)}
+
+/* Соответствие брендбуку */
+.bb{overflow-x:auto;border:1px solid var(--line);background:var(--sheet)}
+.bb table{min-width:720px}
+.st-ok,.st-part,.st-bad,.st-none{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;width:136px;height:24px;line-height:1;font-size:11.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;padding:0 6px;white-space:nowrap}
+.st-ok{background:var(--light);color:var(--black)}
+.st-part{background:var(--grey);color:var(--black)}
+.st-bad{background:var(--red);color:var(--on-red)}
+.st-none{border:1.5px dashed var(--grey);color:var(--ink-2)}
+.bb-swatches{display:flex;gap:6px;margin-top:6px}
+.bb-swatches i{width:18px;height:18px;border:1px solid var(--line)}
+.bb-src{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:0 0 32px}
+.bb-src div{padding:14px 14px 12px;min-height:96px;display:grid;align-content:space-between;font-size:12px;font-weight:600}
+.bb-src b{font-size:14px}
+
+.keep{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.keep div{background:var(--panel);padding:20px 22px;font-size:14.5px;border-left:4px solid var(--red)}
+.keep b{display:block;margin-bottom:4px}
+
+.principles{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.principles div{background:var(--panel);padding:22px 24px;font-size:14.5px;color:var(--ink-2)}
+.principles b{display:block;color:var(--red);font-size:15.5px;margin-bottom:4px}
+
+/* ==== Вайрфреймы ==== */
+.wf-note{font-size:14px;color:var(--ink-2);background:var(--panel);padding:16px 20px;margin-bottom:40px;border-left:4px solid var(--grey)}
+.scheme{margin:8px 0 80px}
+.scheme > h4{font-size:20px;font-weight:700;margin-bottom:8px}
+.scheme > h4 span{color:var(--red)}
+.scheme > p{color:var(--ink-2);font-size:15px;max-width:70ch;margin-bottom:20px}
+.wf-scroll{overflow-x:auto;border:1px solid var(--line);background:var(--sheet)}
+.wf{min-width:760px;color:var(--ink);position:relative}
+.wf-bar{display:flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-bottom:1px solid var(--line);background:var(--wf-fill)}
+.wf-bar i{width:9px;height:9px;border-radius:50%;background:var(--wf-stroke)}
+.wf-bar span{font-size:11px;color:var(--ink-2);margin-left:10px}
+.wf-body{padding:0 28px 28px}
+.callouts{margin:22px 0 0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px 32px;font-size:14px;line-height:1.55}
+.callouts li{display:grid;grid-template-columns:22px 1fr;gap:10px;align-items:start;color:var(--ink-2)}
+.callouts li b{color:var(--ink)}
+.co{display:inline-grid;place-items:center;width:20px;height:20px;background:var(--red);color:#fff;font:700 11px/1 var(--f);flex:none}
+.wf .co,.phone .co{position:absolute;z-index:2;box-shadow:0 0 0 3px var(--sheet)}
+.ph{background-color:var(--wf-fill);background-image:linear-gradient(to top right,transparent calc(50% - .6px),var(--wf-stroke) 50%,transparent calc(50% + .6px)),linear-gradient(to top left,transparent calc(50% - .6px),var(--wf-stroke) 50%,transparent calc(50% + .6px));display:grid;place-items:center;position:relative;min-height:40px}
+.ph.cut{clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,0 100%)}
+.ph em{font:normal 600 10.5px/1.3 var(--f);letter-spacing:.03em;color:var(--ink-2);background:var(--wf-fill);padding:3px 6px;text-align:center;max-width:90%}
+.ln{height:7px;background:var(--wf-fill2)}
+.st{display:grid;gap:7px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.g{display:grid;gap:12px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))} .g3{grid-template-columns:repeat(3,minmax(0,1fr))} .g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.wbtn{font:700 11px/1 var(--f);padding:9px 16px 9px 14px;border:1.5px solid var(--ink);color:var(--ink);white-space:nowrap;clip-path:polygon(0 0,calc(100% - 7px) 0,100% 7px,100% 100%,0 100%)}
+.wbtn.pri{background:var(--red);border-color:var(--red);color:#fff}
+.wbtn.sm{padding:6px 12px 6px 10px;font-size:10px}
+.wchip{font:600 10px/1 var(--f);padding:5px 8px;border:1px solid var(--wf-stroke);color:var(--ink-2);white-space:nowrap}
+.wchip.on{background:var(--ink);color:var(--sheet);border-color:var(--ink)}
+.wt{font-weight:700;letter-spacing:-.005em;line-height:1.08}
+.wt.up{text-transform:uppercase;font-weight:600}
+.wl{font:700 9.5px/1.3 var(--f);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.wl.r{color:var(--red)}
+.wsec{padding-top:26px;position:relative}
+.whead{display:flex;align-items:center;gap:18px;height:58px;border-bottom:1px solid var(--line);position:relative}
+.wlogo{width:30px;flex:none;background:var(--white);padding:3px 4px}
+.wlogo img{display:block;width:100%}
+.wnav{display:flex;gap:16px;font-size:11.5px;font-weight:600;flex:1}
+.wnav span.on{color:var(--red)}
+.wdark{background:var(--wf-dark);color:var(--wf-on-dark);padding:20px}
+.wdark .wl{color:color-mix(in srgb,var(--wf-on-dark) 65%,transparent)}
+.wdark .ln{background:color-mix(in srgb,var(--wf-on-dark) 22%,transparent)}
+.wred{background:var(--red);color:#fff;padding:20px}
+.wred .wl{color:rgba(255,255,255,.8)}
+.wbox{border:1px solid var(--line);padding:12px}
+.wtable{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);border-top:1px solid var(--line);font-size:11.5px}
+.wtable div{padding:7px 0;border-bottom:1px solid var(--line-2)}
+.wtable div:nth-child(odd){color:var(--ink-2)}
+.wdl{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line-2);font-size:11.5px;font-weight:600}
+.wdl span{font:600 10px/1 var(--f);color:var(--ink-2)}
+.cap{font-size:11px;font-weight:700;margin-top:6px;line-height:1.3}
+.cap small{display:block;font:400 10px/1.3 var(--f);color:var(--ink-2);margin-top:2px}
+.catlogo{display:inline-block;border:2px solid var(--red);color:var(--red);font:700 12px/1 var(--f);letter-spacing:-.02em;padding:4px 6px;text-transform:uppercase;transform:scaleY(1.15)}
+.swatch{width:22px;height:22px;border:1px solid var(--wf-stroke)}
+.wfield{height:30px;border-bottom:1.5px solid var(--wf-stroke);font-size:10.5px;color:var(--ink-2);display:flex;align-items:end;padding-bottom:5px}
+.colgrid{display:grid;grid-template-columns:repeat(12,1fr);gap:10px;height:90px}
+.colgrid i{background:color-mix(in srgb,var(--red) 14%,transparent);border-inline:1px dashed color-mix(in srgb,var(--red) 50%,transparent)}
+.wpat{background-color:var(--grey);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Cpath d='M0 0H40V40H0Z' fill='none' stroke='%23ffffff' stroke-width='2'/%3E%3Cpath d='M0 -3L3 0L0 3L-3 0Z M40 -3L43 0L40 3L37 0Z M0 37L3 40L0 43L-3 40Z M40 37L43 40L40 43L37 40Z' fill='%23ffffff'/%3E%3C/svg%3E");background-size:40px 40px}
+
+.phone-wrap{display:flex;gap:28px;flex-wrap:wrap;align-items:flex-start}
+.phone{width:290px;flex:none;border:8px solid var(--black);border-radius:30px;overflow:hidden;background:var(--sheet);position:relative}
+:root[data-theme="dark"] .phone{border-color:var(--grey)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .phone{border-color:var(--grey)}}
+.phone .ph-screen{height:600px;overflow:hidden;position:relative}
+
+/* План и таблицы */
+.stages{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.stage{padding:26px 24px;background:var(--panel)}
+.stage:first-child{background:var(--red);color:var(--on-red)}
+.stage:first-child .mono{color:rgba(255,255,255,.85)}
+.stage h4{margin:6px 0 10px;font-size:17px;font-weight:700}
+.stage ul{margin:0;padding-left:18px;font-size:14px}
+.stage li{margin-bottom:9px}
+.tbl{overflow-x:auto;border:1px solid var(--line);background:var(--sheet)}
+table{border-collapse:collapse;width:100%;min-width:700px;font-size:14px}
+th{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--red);text-align:left;padding:14px 14px;border-bottom:1px solid var(--rule)}
+td{padding:13px 14px;border-bottom:1px solid var(--line-2);vertical-align:top}
+.tbl td:first-child{font-size:12.5px;font-weight:700;width:52px}
+.tbl td:first-child a{text-decoration:none;color:var(--red)}
+tr.grp td{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ink);background:var(--panel);padding:7px 12px}
+
+/* Переключатель темы */
+.theme{position:fixed;top:calc(env(safe-area-inset-top,0px) + 12px);right:12px;z-index:10;display:flex;gap:2px;padding:3px;background:var(--sheet);border:1px solid var(--line);box-shadow:0 2px 10px rgba(0,0,0,.08)}
+.theme button{font:600 12px/1 var(--f);color:var(--ink-2);background:none;border:0;padding:7px 10px;cursor:pointer}
+.theme button:hover{color:var(--ink)}
+.theme button[aria-pressed="true"]{background:var(--red);color:#fff}
+.theme button:focus-visible,.side a:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+
+/* Колонтитул, как в брендбуке */
+.pfoot{margin-top:72px;padding-top:10px;border-top:1px solid var(--rule);display:flex;justify-content:flex-end;gap:14px;font-size:13px;color:var(--ink-2)}
+.pfoot b{color:var(--ink);font-weight:600}
+footer.end{margin-top:64px;padding-top:12px;border-top:1px solid var(--rule);display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;color:var(--ink-2);font-size:13px}
+
+@media (max-width:1060px){
+  .layout{grid-template-columns:1fr;gap:0}
+  .side{position:static;max-height:none;padding-top:24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0 24px;border-bottom:1px solid var(--line);padding-bottom:16px}
+  .side .logo-mini{display:none}
+  main{max-width:none}
+}
+@media (max-width:720px){
+  .cover{grid-template-columns:1fr}
+  .cover .c-tall{display:none}
+  .cover .c-red{padding:26px 22px 60px}
+  .stamp{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .part-head{grid-template-columns:1fr}
+  .part-head .ph-pat{height:40px}
+  .score{grid-template-columns:1fr}
+  .duo{grid-template-columns:1fr}
+  .duo.phones{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .f dl{grid-template-columns:1fr;gap:4px}
+  .f dd{margin-bottom:14px}
+  .f{padding:20px 18px 10px}
+  section.ch{padding-top:60px}
+  .facts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .bb-src{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .theme{position:absolute}
+}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+</style>
+<style>img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+
+
+<div class="theme" role="group" aria-label="Тема оформления">
+  <button type="button" id="th-light" data-t="light" aria-pressed="false">Светлая</button>
+  <button type="button" id="th-dark" data-t="dark" aria-pressed="false">Тёмная</button>
+  <button type="button" id="th-auto" data-t="auto" aria-pressed="false">Авто</button>
+</div>
+<script>
+(function(){
+  var root=document.documentElement, btns=document.querySelectorAll('.theme button');
+  function apply(t){
+    if(t==='light'||t==='dark') root.setAttribute('data-theme',t); else root.removeAttribute('data-theme');
+    btns.forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.t===t))});
+  }
+  var saved='auto'; try{saved=localStorage.getItem('fs-audit-theme')||'auto'}catch(e){}
+  apply(saved);
+  btns.forEach(function(b){b.addEventListener('click',function(){
+    apply(b.dataset.t); try{localStorage.setItem('fs-audit-theme',b.dataset.t)}catch(e){}
+  })});
+})();
+</script>
+
+<div class="layout">
+
+<nav class="side" aria-label="Содержание">
+  <img class="logo-mini" src="img/logo.svg" alt="FRONTSIDE">
+  <div>
+    <div class="part">Коротко</div>
+    <a href="#short"><b>00</b>Вердикт и топ-5</a>
+  </div>
+  <div>
+    <div class="part">Часть 1 · Диагноз</div>
+    <a href="#scores"><b>1.1</b>Оценка визуала</a>
+    <a href="#brand"><b>1.2</b>Соответствие брендбуку</a>
+    <a href="#keep"><b>1.3</b>Что сохранить</a>
+  </div>
+  <div>
+    <div class="part">Часть 2 · Проблемы</div>
+    <a href="#ds"><b>2.1</b>Дизайн-система · Д</a>
+    <a href="#pages"><b>2.2</b>Страницы · С</a>
+    <a href="#screens"><b>2.3</b>Экраны и скорость · Э</a>
+    <a href="#legal"><b>2.4</b>Доступность и право · Т</a>
+  </div>
+  <div>
+    <div class="part">Часть 3 · Предложение</div>
+    <a href="#principles"><b>3.1</b>Принципы</a>
+    <a href="#schemes"><b>3.2</b>Схемы страниц</a>
+    <a href="#plan"><b>3.3</b>План работ</a>
+  </div>
+  <div>
+    <div class="part">Приложения</div>
+    <a href="#all"><b>А</b>Все находки</a>
+    <a href="#limits"><b>Б</b>Ограничения</a>
+  </div>
+</nav>
+
+<main>
+
+<header class="cover">
+  <div class="c-logo"><img src="img/logo.svg" alt="FRONTSIDE"></div>
+  <div class="c-tall wpat" aria-hidden="true"></div>
+  <div class="c-red cut">
+    <h1>Аудит сайта<br>frontside.ru</h1>
+    <p>UX/UI-разбор, сверка с брендбуком 2025 и предложения по редизайну</p>
+    <svg class="arrow" viewBox="0 0 28 28" aria-hidden="true"><path d="M5 5L23 23M23 9V23H9"/></svg>
+  </div>
+</header>
+<div class="stamp" aria-label="Паспорт аудита">
+  <div><span>Объект</span>frontside.ru</div>
+  <div><span>Стадия</span>Аудит · этап 1</div>
+  <div><span>Охват</span>21 страница</div>
+  <div><span>Экраны</span>1920, 1440, 390 px</div>
+  <div><span>Аудитория</span>Архитекторы</div>
+  <div><span>Дата</span>01.10.2026</div>
+</div>
+
+<!-- ================= КОРОТКО ================= -->
+<section class="ch" id="short">
+  <div class="ch-head"><span class="no">00</span><h3>Коротко</h3></div>
+  <p class="verdict">У сайта крепкая основа: широкий каталог, реальные построенные объекты, раздел документов и узнаваемый фирменный стиль. Сайт развивался поэтапно, и со временем в нём накопились расхождения: разделы оформлены по разным шаблонам, а инструменты брендбука — фирменные шрифты, модульная система, паттерн — применены не полностью.</p>
+  <p class="verdict">Для архитекторов, основной аудитории, это особенно заметно: поставщика они оценивают по тем же критериям, что и собственный проект, — по точности деталей, качеству изображений и удобству работы с технической информацией.</p>
+  <p class="verdict">Большинство замечаний касается технической реализации и решается точечно: исходные фото в полном разрешении, подключение фирменного шрифта, исправление блока телефона, единая сетка. Эти задачи можно закрыть на первом этапе, не дожидаясь редизайна. Следующий шаг — единая дизайн-система на основе брендбука и переработка трёх ключевых шаблонов: главной, карточки продукта и проектов. Это сделает сайт рабочим инструментом архитектора и раскроет сильные продукты компании — ARTVISION, UNIQUE 2.0, ARTLINE и LED.</p>
+
+  <ol class="top5">
+    <li><b>Заменить растянутые фото</b><span>Фото первого экрана — файл 675 px, растянутый на 1920 (Э1).</span></li>
+    <li><b>Одна дизайн-система вместо двух</b><span>Свести шрифт, шапку, сетку и кнопки к общим правилам на основе брендбука (Д1–Д5, глава 1.2).</span></li>
+    <li><b>Портфолио — в главное меню и с данными</b><span>Вынести проекты в главное меню и дополнить данными, важными для архитектора (С1, С9).</span></li>
+    <li><b>Инструменты для проектировщика</b><span>BIM, DWG, палитры и образцы прямо в карточке продукта (С8).</span></li>
+    <li><b>Починить мобильную версию</b><span>Страницы уезжают вбок, заголовок перекрыт, фото пережаты (Э4, Э5).</span></li>
+  </ol>
+
+  <div class="facts">
+    <div class="fact"><b>×2,8</b><small>растянуто фото первого экрана на 1920</small></div>
+    <div class="fact"><b>2+</b><small>несовместимых визуальных языка</small></div>
+    <div class="fact"><b>2 шапки</b><small>разной высоты и ширины на 1920</small></div>
+    <div class="fact"><b>5,2 с</b><small>до появления главного изображения (один замер)</small></div>
+    <div class="fact"><b>1</b><small>файл в «BIM-библиотеке»</small></div>
+    <div class="fact"><b>4</b><small>написания названия компании на главной</small></div>
+  </div>
+</section>
+
+<div class="pfoot">Аудит сайта frontside.ru <b>Коротко</b></div>
+
+<!-- ================= ЧАСТЬ 1 ================= -->
+<div class="part-head"><div class="ph-red cut"><svg class="arrow" viewBox="0 0 28 28" aria-hidden="true"><path d="M5 5L23 23M23 9V23H9"/></svg><span class="pn">Часть 1</span><h2>Диагноз</h2><p>Как сайт выглядит глазами архитектора и что в нём есть ценного.</p></div><div class="ph-pat" aria-hidden="true"></div></div>
+
+<section class="ch" id="scores">
+  <div class="ch-head"><span class="no">1.1</span><h3>Оценка визуала</h3></div>
+  <p class="ch-lead">Шкала из пяти, где 3 — нормальный средний уровень рынка. Это экспертная оценка, а не измерение.</p>
+  <div class="scores">
+    <div class="score"><h4>Целостность</h4><div class="meter" aria-label="2 из 5"><i class="on"></i><i class="on"></i><i></i><i></i><i></i><em>2/5</em></div>
+      <p>Разделы оформлены по-разному: у них свои шрифты, шапки, кнопки и фильтры.</p></div>
+    <div class="score"><h4>Преемственность</h4><div class="meter" aria-label="2 из 5"><i class="on"></i><i class="on"></i><i></i><i></i><i></i><em>2/5</em></div>
+      <p>Фильтры сделаны тремя способами, заголовки второго уровня — тремя стилями, аккордеоны — двумя.</p></div>
+    <div class="score"><h4>Новизна</h4><div class="meter" aria-label="2 из 5"><i class="on"></i><i class="on"></i><i></i><i></i><i></i><em>2/5</em></div>
+      <p>Слайдер, коллаж плашек, аккордеоны и сетка сертификатов — распространённые решения прошлых лет, сегодня они уже не выделяют бренд. Новые продукты (ARTVISION, UNIQUE 2.0, LED) заслуживают более яркой подачи.</p></div>
+    <div class="score"><h4>Креативность</h4><div class="meter" aria-label="1,5 из 5"><i class="on"></i><i class="half"></i><i></i><i></i><i></i><em>1,5/5</em></div>
+      <p>Основной сайт пока не использует выразительные средства брендбука — модули и паттерн. Лендинг «Архитектурные решения» заметно сильнее (около 3/5); его подход стоит развить в собственный узнаваемый язык.</p></div>
+    <div class="score"><h4>Фото и рендеры</h4><div class="meter" aria-label="3 из 5"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><em>3/5</em></div>
+      <p>Реальные объекты — сильная сторона сайта. Чтобы раскрыть их, нужны исходники в полном разрешении, разделение фото и рендеров, макросъёмка фактур и узлов.</p></div>
+    <div class="score"><h4>Соответствие ЦА</h4><div class="meter" aria-label="2 из 5"><i class="on"></i><i class="on"></i><i></i><i></i><i></i><em>2/5</em></div>
+      <p>Сайт хорошо обращается к заказчику и инвестору. Для архитектора стоит добавить рабочие инструменты: фильтр проектов, BIM и узлы, палитры, заказ образцов.</p></div>
+  </div>
+  <div class="duo" style="margin-top:22px">
+    <figure><img src="img/home-hero.jpg" alt="Первый экран главной" loading="lazy"><figcaption><b>Основной шаблон</b>Системный шрифт, слайдер, двойная пагинация.</figcaption></figure>
+    <figure><img src="img/archsol-hero.jpg" alt="Первый экран лендинга" loading="lazy"><figcaption><b>Лендинг</b>Другой шрифт, сетка и кнопки. Сверху сам открылся чат.</figcaption></figure>
+  </div>
+</section>
+
+<section class="ch" id="brand">
+  <div class="ch-head"><span class="no">1.2</span><h3>Соответствие брендбуку</h3></div>
+  <p class="ch-lead">Сверка сайта с «Руководством по использованию бренда» FRONTSIDE 2025. Брендбук сделан под печать и офлайн-носители, цифровая среда в нём — только шаблон презентации. Правил для сайта в нём нет, поэтому часть расхождений — не нарушение, а пробел, который нужно закрыть.</p>
+  <div class="bb-src" aria-label="Фирменные цвета">
+    <div style="background:#EF4836;color:#fff"><b>PANTONE 179 C</b>#EF4836</div>
+    <div style="background:#BBBDC0;color:#231F20"><b>Black 30%</b>#BBBDC0</div>
+    <div style="background:#F1F1F1;color:#231F20;border:1px solid var(--line)"><b>PANTONE 663 C</b>#F1F1F1</div>
+    <div style="background:#231F20;color:#F1F1F1"><b>Black C</b>#231F20</div>
+  </div>
+  <div class="bb"><table>
+    <thead><tr><th>Элемент</th><th>Брендбук</th><th>На сайте</th><th>Статус</th></tr></thead>
+    <tbody>
+      <tr><td>Логотип</td><td>Красный; на фото и цветном фоне — на белой подложке</td><td>Красный, на фото первого экрана — на белой подложке</td><td><span class="st-ok">Соответствует</span></td></tr>
+      <tr><td>Красный</td><td>#EF4836</td><td>#EF4836 основной, местами близкий #F04432</td><td><span class="st-part">Почти</span></td></tr>
+      <tr><td>Чёрный</td><td>#231F20</td><td>#231F20 в тексте; #11161B в ряде блоков</td><td><span class="st-part">Частично</span></td></tr>
+      <tr><td>Светло-серый</td><td>#F1F1F1</td><td>Фоны #F7F7F7 и #F1F3F5 — нефирменные оттенки</td><td><span class="st-part">Частично</span></td></tr>
+      <tr><td>Серый 30%</td><td>#BBBDC0</td><td>Используется точечно</td><td><span class="st-part">Частично</span></td></tr>
+      <tr><td>Нефирменные цвета</td><td>Не допускаются</td><td>Ярко-зелёный виджет чата на каждой странице</td><td><span class="st-bad">Расходится</span></td></tr>
+      <tr><td>Корпоративный шрифт</td><td>Segoe UI</td><td>Указан в заголовках, но виден только на Windows (Д2)</td><td><span class="st-part">Частично</span></td></tr>
+      <tr><td>Рекламный шрифт</td><td>Wix Madefor Display</td><td>Не используется</td><td><span class="st-none">Не применён</span></td></tr>
+      <tr><td>Основной текст</td><td>Только фирменные шрифты</td><td>Solomon — вне брендбука</td><td><span class="st-bad">Расходится</span></td></tr>
+      <tr><td>Модульная система</td><td>Плашки со скосом угла 45°, тонкие белые зазоры</td><td>Красные плашки в «Преимуществах» — прямоугольники без скосов, раскладка не модульная</td><td><span class="st-bad">Расходится</span></td></tr>
+      <tr><td>Паттерн</td><td>Сетка плашек с ромбами на стыках</td><td>Не используется</td><td><span class="st-none">Не применён</span></td></tr>
+      <tr><td>Иконки</td><td>Линейные, только фирменные цвета, стрелки ↗ ↙ ↘</td><td>Стрелки → ↑ ↓ в разных стилях</td><td><span class="st-part">Частично</span></td></tr>
+      <tr><td>Логотипы категорий</td><td>FRONTBASE, FRONTTOP, ARTLINE, UNIQUE, AESTHETIC в рамке</td><td>Не используются, названия набраны текстом</td><td><span class="st-none">Не применён</span></td></tr>
+      <tr><td>Написание бренда</td><td>Само руководство пишет и FRONTSIDE, и Frontside</td><td>4 варианта на главной (Д7)</td><td><span class="st-none">Нет правила</span></td></tr>
+    </tbody>
+  </table></div>
+  <p style="margin-top:14px;max-width:70ch">Вывод: сайт берёт из брендбука логотип, красный и чёрный, но не использует его главные графические идеи — модульные плашки со скосом и паттерн. Именно они отличают FRONTSIDE от других заводов, и их стоит сделать основой интерфейса (глава 3.1). В брендбук нужно добавить раздел «Сайт»: веб-шрифт, сетку, кнопки, правило написания бренда.</p>
+</section>
+
+<section class="ch" id="keep">
+  <div class="ch-head"><span class="no">1.3</span><h3>Что сохранить</h3></div>
+  <p class="ch-lead">Сильные стороны, на которые стоит опереться при развитии сайта.</p>
+  <div class="keep">
+    <div><b>Реальные объекты</b>Фото построенных зданий — главный актив. Их нужно показывать крупнее и в нормальном разрешении.</div>
+    <div><b>Единый шаблон продукта</b>Все карточки устроены одинаково, в них легко встроить блок «Для проектировщика».</div>
+    <div><b>Раздел «Документы»</b>Поиск, категории и «Открыть / Скачать» уже удобны. Не хватает наполнения BIM.</div>
+    <div><b>Логотип и фирменные цвета</b>Применяются правильно, в том числе белая подложка на фото.</div>
+    <div><b>Карта проектов и вебинары</b>Редкие для отрасли вещи, их стоит поднять выше в навигации.</div>
+    <div><b>Чипы параметров с лендинга</b>«3D-рельеф», «до 6 000 мм», «IP68» — хороший формат подачи продукта.</div>
+  </div>
+</section>
+
+<div class="pfoot">Аудит сайта frontside.ru <b>Диагноз</b></div>
+
+<!-- ================= ЧАСТЬ 2 ================= -->
+<div class="part-head"><div class="ph-red cut"><svg class="arrow" viewBox="0 0 28 28" aria-hidden="true"><path d="M5 5L23 23M23 9V23H9"/></svg><span class="pn">Часть 2</span><h2>Проблемы</h2><p>Каждая находка описана одинаково: что видим, почему это плохо, что делаем. Коды (Д1, С3, Э2) используются в схемах, плане и сводной таблице.</p></div><div class="ph-pat" aria-hidden="true"></div></div>
+
+<div class="legend" role="note">
+  <span><i class="tag p0">Критично</i> делаем первым</span>
+  <span><i class="tag p1">Важно</i> влияет на доверие и заявки</span>
+  <span><i class="tag p2">Желательно</i> полировка</span>
+</div>
+
+<!-- 2.1 -->
+<section class="ch" id="ds">
+  <div class="ch-head"><span class="no">2.1</span><h3>Дизайн-система</h3></div>
+  <p class="ch-lead">Проблемы, которые видны на каждой странице. Их исправление даёт самый большой эффект на единицу работы.</p>
+
+  <article class="f i0" id="d1"><header><span class="code">Д1</span><h4>Два визуальных языка на одном сайте</h4><i class="tag p0">Критично</i></header>
+    <dl><dt>Что видим</dt><dd>Основной шаблон и лендинг «Архитектурные решения» — два разных дизайна: шрифт, шапка, подвал, кнопки, сетка. «Документы» и «Контакты» формально на основном шаблоне, но со своими табами, фильтрами и заголовками.</dd>
+    <dt>Почему важно</dt><dd>Переходя по меню, человек как будто попадает на другой сайт. Бренд не запоминается.</dd>
+    <dt>Что делаем</dt><dd class="do">Одна дизайн-система и UI-кит. Лендинг — хороший ориентир по уровню; его подход стоит развить на основе брендбука.</dd></dl></article>
+
+  <article class="f i0" id="d2"><header><span class="code">Д2</span><h4>Фирменные шрифты не доходят до пользователя</h4><i class="tag p0">Критично</i></header>
+    <dl><dt>Брендбук</dt><dd>Два шрифта: Segoe UI — корпоративный (документы), Wix Madefor Display — для рекламных материалов. Других шрифтов нет.</dd>
+    <dt>Что видим</dt><dd>Заголовки на сайте заданы как Segoe UI, но шрифт не подключён к сайту: он есть только на Windows. На Mac его подменяет Tahoma, на iOS и Android — другие системные шрифты. Основной текст набран шрифтом Solomon, которого в брендбуке нет. Wix Madefor Display пока не используется. Размеры H2 — 28, 36, 40 и 60 px без системы.</dd>
+    <dt>Почему важно</dt><dd>На Mac, где работает заметная часть архитекторов, сайт выглядит не так, как задумано брендом. Текст и заголовки — из разных шрифтовых семей.</dd>
+    <dt>Что делаем</dt><dd class="do">Для сайта взять Wix Madefor Display: он из брендбука, бесплатный, с кириллицей и подключается как веб-шрифт. Segoe UI — системный шрифт Windows, для встраивания на сайт нужна отдельная лицензия (уточнить у юриста). Solomon убрать. Задать единую шкалу размеров.</dd></dl>
+    <figure><img src="img/about-heading.jpg" alt="Красный заголовок на странице О компании" loading="lazy"><figcaption><b>О компании · Mac</b>Заголовок набран Tahoma вместо Segoe UI, красный 60 px — стиль, который больше нигде не встречается.</figcaption></figure></article>
+
+  <article class="f i1" id="d3"><header><span class="code">Д3</span><h4>Две разные шапки</h4><i class="tag p1">Важно</i></header>
+    <dl><dt>Что видим</dt><dd>На 1920 у каталога и карточек продуктов шапка 120 px в узком контейнере, логотип на 305 px от края. У главной, «Проектов», «Услуг», «О компании» — 156 px во всю ширину, логотип на 110 px. На 1440 разница не видна.</dd>
+    <dt>Почему важно</dt><dd>При переходе между разделами шапка меняет размер и положение — пользователь воспринимает это как нестабильность интерфейса.</dd>
+    <dt>Что делаем</dt><dd class="do">Один компонент шапки на общей сетке (см. схему 3.2-F).</dd></dl>
+    <figure><img src="img/w1920-header-a.jpg" alt="Широкая шапка" loading="lazy"><figcaption><b>Проекты · 1920</b>Логотип на 110 px.</figcaption></figure>
+    <figure><img src="img/w1920-header-b.jpg" alt="Узкая шапка" loading="lazy"><figcaption><b>Каталог · 1920</b>Логотип на 305 px, H1 левее логотипа.</figcaption></figure></article>
+
+  <article class="f i1" id="d4"><header><span class="code">Д4</span><h4>Единая сетка и поля</h4><i class="tag p1">Важно</i></header>
+    <dl><dt>Что видим</dt><dd>Левый край H1 на 1440: 107 px (основной шаблон), 40 px («Документы», «Контакты»), 31 px (продукты), 112 px (лендинг). На 1920: 142, 60–80, 267 и 352 px. Хлебные крошки на всех проверенных страницах на 64 px правее H1.</dd>
+    <dt>Почему важно</dt><dd>На сайте сосуществуют четыре системы полей. Архитекторы, работающие с модульной сеткой, замечают такие расхождения в первую очередь.</dd>
+    <dt>Что делаем</dt><dd class="do">12 колонок, один контейнер с фиксированными полями для всех шаблонов.</dd></dl></article>
+
+  <article class="f i1" id="d5"><header><span class="code">Д5</span><h4>Единая система кнопок</h4><i class="tag p1">Важно</i></header>
+    <dl><dt>Что видим</dt><dd>Основное действие бывает красной заливкой, красным контуром, красной ссылкой и чёрным контуром. «Отправить заявку» на главной залита, на внутренних — контурная.</dd>
+    <dt>Что делаем</dt><dd class="do">Три уровня: основная, вторичная, ссылка. Цвета закрепить токенами.</dd></dl></article>
+
+  <article class="f i1" id="d6"><header><span class="code">Д6</span><h4>Виджет чата выбивается из фирменного стиля</h4><i class="tag p1">Важно</i></header>
+    <dl><dt>Что видим</dt><dd>Ярко-зелёная плашка «Напишите нам» на каждой странице поверх контента. На лендинге чат сам раскрывается с рекламой вебинара и закрывает полэкрана.</dd>
+    <dt>Что делаем</dt><dd class="do">Цвета бренда, свёрнутая иконка, без автооткрытия.</dd></dl></article>
+
+  <article class="f i1" id="d7"><header><span class="code">Д7</span><h4>Название и тексты</h4><i class="tag p1">Важно</i></header>
+    <dl><dt>Что видим</dt><dd>Только на главной: Frontside, FRONTSIDE, Фронтсайд, ФРОНТСАЙД. Ошибки: «гибко реагировать требования» (нет «на»), «Скрольте вправо», заглавная после тире. Ответ на «Какие системы вы производите?» без единого названия системы. Тексты держатся на прилагательных («инновационные», «уникальные»).</dd>
+    <dt>Что делаем</dt><dd class="do">Правило написания бренда, вычитка, ключевые тексты — языком фактов: размеры, сроки, допуски, объекты.</dd></dl></article>
+
+  <article class="f i2" id="d8"><header><span class="code">Д8</span><h4>Аккордеоны устроены по-разному</h4><i class="tag p2">Желательно</i></header>
+    <dl><dt>Что видим</dt><dd>На главной и в продуктах у открытого пункта ↓, у закрытых ↑ — наоборот принятому. На «Контактах» — «+».</dd>
+    <dt>Что делаем</dt><dd class="do">Один компонент с «+ / −».</dd></dl>
+    <figure><img src="img/home-faq.jpg" alt="Блок FAQ со стрелками" loading="lazy"></figure></article>
+</section>
+
+<!-- 2.2 -->
+<section class="ch" id="pages">
+  <div class="ch-head"><span class="no">2.2</span><h3>Страницы</h3></div>
+  <p class="ch-lead">В порядке важности для архитектора.</p>
+
+  <div class="sub">Шапка и навигация</div>
+  <article class="f i0" id="s1"><header><span class="code">С1</span><h4>Телефон обрезан, «Проекты» вне главного меню</h4><i class="tag p0">Критично</i></header>
+    <dl><dt>Что видим</dt><dd>Номер в шапке виден как «+7 (495) 642-80-…»: текст 256 px в блоке 198 px, на всех страницах и ширинах. «Проекты» стоят мелким серым текстом рядом с «Вакансиями» и «Акциями», в главном меню их нет. «Услуги» и «Решения» во многом дублируют друг друга. Соцсети в подвале: 3 на десктопе, 5 на мобильном.</dd>
+    <dt>Почему важно</dt><dd>Телефон — основной канал связи, и сейчас его сложно прочитать. Портфолио — то, с чего архитектор начинает знакомство с поставщиком.</dd>
+    <dt>Что делаем</dt><dd class="do">Починить блок телефона (причину — вероятно, подмену номера коллтрекингом — проверит разработчик). Меню: Каталог · Проекты · Архитекторам · Услуги · О компании · Документы (схема 3.2-A).</dd></dl>
+    <figure><img src="img/header-phone.jpg" alt="Обрезанный телефон" loading="lazy"></figure></article>
+
+  <div class="sub">Главная</div>
+  <article class="f i1" id="s2"><header><span class="code">С2</span><h4>Первый экран не раскрывает преимущества</h4><i class="tag p1">Важно</i></header>
+    <dl><dt>Что видим</dt><dd>«Фасадные системы. Проектирование и производство» — формулировка точная, но не отличает компанию от других производителей. Слайдер из 4 экранов прячет новинки. Позиция показана дважды: точками и счётчиком «01 | 04». Кнопка «Подробнее» не говорит, куда ведёт.</dd>
+    <dt>Что делаем</dt><dd class="do">Один экран: тезис про архитектурные возможности, крупное фото объекта с подписью (система, цвет), две кнопки — «Смотреть проекты» и «Обсудить проект» (схема 3.2-A).</dd></dl></article>
+
+  <article class="f i1" id="s3"><header><span class="code">С3</span><h4>Коллаж «Преимущества»</h4><i class="tag p1">Важно</i></header>
+    <dl><dt>Что видим</dt><dd>Пять красных плашек, пять фото и три узкие текстовые рамки без ясной логики. Сильные цифры (3000+ объектов, 15 млн м², с 2001 года) теряются. Блок повторяется на каждой карточке продукта.</dd>
+    <dt>Почему важно</dt><dd>Крупные красные плашки забирают внимание у фотографий фасадов — главного аргумента компании.</dd>
+    <dt>Что делаем</dt><dd class="do">Строка из 4 фактов крупным шрифтом. С карточек продуктов блок убрать.</dd></dl>
+    <figure><img src="img/home-advantages.jpg" alt="Коллаж Преимущества" loading="lazy"></figure></article>
+
+  <article class="f i2" id="s4"><header><span class="code">С4</span><h4>Аккордеоны «Направления» и «Услуги»</h4><i class="tag p2">Желательно</i></header>
+    <dl><dt>Что видим</dt><dd>Картинка слева не меняется при переключении пунктов, второй и третий пункты скрыты. На 1920 между картинкой и текстом около 450 px свободного пространства.</dd>
+    <dt>Что делаем</dt><dd class="do">Направления — открытыми карточками, услуги — схемой этапов.</dd></dl></article>
+
+  <article class="f i1" id="s5"><header><span class="code">С5</span><h4>21 документ на главной</h4><i class="tag p1">Важно</i></header>
+    <dl><dt>Что видим</dt><dd>Карусель с одинаковыми обложками: ИНН, ОГРН, «Смена наименования», дважды одно и то же заключение. Проекты — слайдером «1 из 12».</dd>
+    <dt>Что делаем</dt><dd class="do">3 ключевых документа + «Все документы». Проекты — сеткой 6 объектов с подписями систем.</dd></dl></article>
+
+  <article class="f i2" id="s6"><header><span class="code">С6</span><h4>Форма заявки: длина и сценарий для архитектора</h4><i class="tag p2">Желательно</i></header>
+    <dl><dt>Что видим</dt><dd>5 полей, файл и две галочки на полупрозрачном рендере с низким контрастом.</dd>
+    <dt>Что делаем</dt><dd class="do">3 обязательных поля и переключатель «Я архитектор / застройщик / подрядчик».</dd></dl></article>
+
+  <div class="sub">Каталог и продукт</div>
+  <article class="f i2" id="s7"><header><span class="code">С7</span><h4>Каталог: различия систем и место для акции</h4><i class="tag p2">Желательно</i></header>
+    <dl><dt>Что видим</dt><dd>Баннер «UNIQUE BV — Выгодное предложение!» стоит пятой плиткой. Якорные чипы мелкие и серые. По плитке не понять, чем системы отличаются. На 1920 сетка держит 3 колонки, справа остаётся ~460 px свободного места.</dd>
+    <dt>Что делаем</dt><dd class="do">Акцию — отдельной полосой, на плитку — 2–3 параметра-чипа, 4 колонки на широком экране.</dd></dl>
+    <figure><img src="img/catalog.jpg" alt="Каталог" loading="lazy"></figure></article>
+
+  <article class="f i1" id="s8"><header><span class="code">С8</span><h4>Продукт: файлы для проектирования</h4><i class="tag p1">Важно</i></header>
+    <dl><dt>Что видим</dt><dd>Характеристики — абзацами мелкого текста в табах. Нет BIM, DWG-узлов, техлиста, палитры, заказа образца. В «BIM-библиотеке» раздела «Документы» один файл. FAQ и «Преимущества» одинаковы на всех карточках.</dd>
+    <dt>Почему важно</dt><dd>Архитектор закладывает в проект того, чьи файлы у него под рукой.</dd>
+    <dt>Что делаем</dt><dd class="do">Блок «Для проектировщика», таблица характеристик, проекты с этой системой (схема 3.2-B).</dd></dl>
+    <div class="duo">
+      <figure><img src="img/product-hero.jpg" alt="Карточка ARTVISION" loading="lazy"><figcaption><b>ARTVISION</b>Галерея без подписей.</figcaption></figure>
+      <figure><img src="img/product-specs.jpg" alt="Характеристики текстом" loading="lazy"><figcaption><b>Характеристики</b>Абзацы вместо таблицы.</figcaption></figure>
+    </div></article>
+
+  <div class="sub">Проекты</div>
+  <article class="f i0" id="s9"><header><span class="code">С9</span><h4>Портфолио не раскрывает потенциал проектов</h4><i class="tag p0">Критично</i></header>
+    <dl><dt>Что видим</dt><dd>Превью по 480 px в две колонки, один фильтр «Все типы», около сотни проектов (оценка по пагинации) при заявленных 3000+. На 1920 первый проект видно только после прокрутки. В кейсе — локация и система, нет бюро, цвета, площади, года, узлов; заметная часть текста — цитата с открытия объекта, а не рассказ о фасадном решении; в конце ни действия, ни похожих проектов.</dd>
+    <dt>Что делаем</dt><dd class="do">Галерея с фильтрами по системе, типу, цвету, региону. Кейс с паспортом объекта (схема 3.2-C).</dd></dl>
+    <div class="duo">
+      <figure><img src="img/projects.jpg" alt="Список проектов" loading="lazy"><figcaption><b>Проекты</b>Мелкие превью.</figcaption></figure>
+      <figure><img src="img/project.jpg" alt="Карточка проекта" loading="lazy"><figcaption><b>Кейс</b>Нет паспорта и следующего шага.</figcaption></figure>
+    </div></article>
+
+  <div class="sub">Лендинг «Архитектурные решения»</div>
+  <article class="f i1" id="s10"><header><span class="code">С10</span><h4>Нет перехода на основной сайт, заголовок перекрывает фото</h4><i class="tag p1">Важно</i></header>
+    <dl><dt>Что видим</dt><dd>В шапке нет меню, поэтому с лендинга нельзя перейти в каталог или проекты. На 1920 «АРХИТЕКТУРНЫЕ» (120 px) заходит на круглое фото, фоновый водяной знак конкурирует с заголовком. «Скрольте вправо» — горизонтальная прокрутка каталога неочевидна без тачпада. На телефоне номер в шапке переносится на две строки.</dd>
+    <dt>Что делаем</dt><dd class="do">Встроить в общий сайт как раздел «Архитекторам» (схема 3.2-D).</dd></dl>
+    <figure><img src="img/w1920-archsol.jpg" alt="Лендинг на 1920" loading="lazy"></figure></article>
+
+  <div class="sub">Остальные страницы</div>
+  <article class="f i2" id="s11"><header><span class="code">С11</span><h4>Услуги, Решения, О компании</h4><i class="tag p2">Желательно</i></header>
+    <dl><dt>Что видим</dt><dd>В «Услугах» абстрактные фото панелей вместо процесса; на 1920 первый экран — один заголовок. В «Решениях» H1 в 6 строк. «О компании» начинается со стены текста.</dd>
+    <dt>Что делаем</dt><dd class="do">Услуги — схемой этапов с реальными фото, «О компании» + «Производство» — история завода с цифрами и видео цеха.</dd></dl></article>
+
+  <article class="f i2" id="s12"><header><span class="code">С12</span><h4>Документы, Новости, Контакты</h4><i class="tag p2">Желательно</i></header>
+    <dl><dt>Что видим</dt><dd>Документы: красный круг перекрывает название на обложке, обложки неразличимы. Новости: картинка только у первой. Контакты: светлый H2, свои табы, у 9 картинок нет alt, телефоны открываются только в аккордеоне.</dd>
+    <dt>Что делаем</dt><dd class="do">Привести к общим компонентам, у новостей — обложки и теги.</dd></dl>
+    <div class="duo">
+      <figure><img src="img/downloads.jpg" alt="Документы" loading="lazy"><figcaption><b>Документы</b></figcaption></figure>
+      <figure><img src="img/news.jpg" alt="Новости" loading="lazy"><figcaption><b>Новости</b></figcaption></figure>
+    </div></article>
+</section>
+
+<!-- 2.3 -->
+<section class="ch" id="screens">
+  <div class="ch-head"><span class="no">2.3</span><h3>Экраны и скорость</h3></div>
+  <p class="ch-lead">Как сайт ведёт себя на 1920, 1440 и на телефоне (390 px).</p>
+
+  <div class="sub">1920 px</div>
+  <article class="f i0" id="e1"><header><span class="code">Э1</span><h4>Фото растянуты сильнее исходника</h4><i class="tag p0">Критично</i></header>
+    <dl><dt>Что видим</dt><dd>Фото первого экрана главной — файл 675 px, показан на 1920 (×2,8), на 1440 — ×2,1. Слайды проектов и фото в «Услугах» и «Решениях» растянуты в 1,4–1,6 раза.</dd>
+    <dt>Почему важно</dt><dd>Швы и фактура панелей размыты. Для компании, которая продаёт внешний вид фасада, качество изображений — первоочередная задача.</dd>
+    <dt>Что делаем</dt><dd class="do">Исходники от 2560 px для полноэкранных кадров, 1600 px для остальных, srcset.</dd></dl>
+    <figure><img src="img/w1920-home-hero.jpg" alt="Главная на 1920" loading="lazy"><figcaption><b>Главная · 1920×1080</b>Растянутое фото, под ним свободная полоса ~200 px.</figcaption></figure></article>
+
+  <article class="f i1" id="e2"><header><span class="code">Э2</span><h4>Пропорции на широких экранах</h4><i class="tag p1">Важно</i></header>
+    <dl><dt>Что видим</dt><dd>Контейнер растягивается до 1707 px, но блоки не перестроены: первые экраны «Услуг» и «Проектов» почти без контента, картинка и текст на главной далеко разнесены.</dd>
+    <dt>Что делаем</dt><dd class="do">Ограничить ширину контента или перестроить сетку под широкий экран, сократить вертикальные отступы.</dd></dl>
+    <div class="duo">
+      <figure><img src="img/w1920-projects.jpg" alt="Проекты на 1920" loading="lazy"><figcaption><b>Проекты</b></figcaption></figure>
+      <figure><img src="img/w1920-services.jpg" alt="Услуги на 1920" loading="lazy"><figcaption><b>Услуги</b></figcaption></figure>
+    </div></article>
+
+  <div class="sub">1440 px</div>
+  <article class="f i1" id="e3"><header><span class="code">Э3</span><h4>Главная шире окна на 20 px</h4><i class="tag p1">Важно</i></header>
+    <dl><dt>Что видим</dt><dd>Активный слайд первого экрана выходит за край: на Windows с видимыми полосами прокрутки появится горизонтальный скролл.</dd>
+    <dt>Что делаем</dt><dd class="do">Обрезать контейнер слайдера, проверить остальные слайдеры.</dd></dl></article>
+
+  <div class="sub">Телефон, 390 px</div>
+  <article class="f i0" id="e4"><header><span class="code">Э4</span><h4>Страницы уезжают вбок</h4><i class="tag p0">Критично</i></header>
+    <dl><dt>Что видим</dt><dd>Сильно шире экрана: «Решения → объект с требованиями к архитектуре» (607 px), «LED-подсветка» (548), «Проекты» (452). Слегка, на 4–14 px: «Документы», «Решения», «Новости», «Карта». Причины: слайдеры, ряд фильтров, пагинация.</dd>
+    <dt>Что делаем</dt><dd class="do">Обрезать слайдеры, фильтры — в прокручиваемую полосу, автопроверка ширины на всех шаблонах.</dd></dl></article>
+
+  <article class="f i0" id="e5"><header><span class="code">Э5</span><h4>Первый экран на телефоне</h4><i class="tag p0">Критично</i></header>
+    <dl><dt>Что видим</dt><dd>Точки слайдера наезжают на заголовок, счётчик «01 | 04» висит посреди фасада, фото пережато с артефактами сжатия.</dd>
+    <dt>Что делаем</dt><dd class="do">Отдельный мобильный кадр, без точек, одна кнопка (схема 3.2-E).</dd></dl>
+    <div class="duo phones">
+      <figure><img src="img/m-home-hero.jpg" alt="Мобильная главная" loading="lazy"><figcaption><b>Главная</b></figcaption></figure>
+      <figure><img src="img/m-archsol-hero.jpg" alt="Мобильный лендинг" loading="lazy"><figcaption><b>Лендинг</b></figcaption></figure>
+    </div></article>
+
+  <div class="sub">Скорость</div>
+  <article class="f i1" id="e6"><header><span class="code">Э6</span><h4>Скорость загрузки</h4><i class="tag p1">Важно</i></header>
+    <dl><dt>Что видим</dt><dd>Главная: 4,2 МБ (3 МБ картинок, 0,6 МБ скриптов), 61 запрос, главное изображение появляется через 5,2 с (норма Google — до 2,5 с). 7 сторонних доменов: метрики, чат, два коллтрекинга. Замер один, на десктопе.</dd>
+    <dt>Что делаем</dt><dd class="do">srcset, отложенная загрузка ниже первого экрана, один коллтрекинг, чат по клику.</dd></dl></article>
+</section>
+
+<!-- 2.4 -->
+<section class="ch" id="legal">
+  <div class="ch-head"><span class="no">2.4</span><h3>Доступность и право</h3></div>
+  <article class="f i1" id="t1"><header><span class="code">Т1</span><h4>Cookie-баннер без отказа</h4><i class="tag p1">Важно</i></header>
+    <dl><dt>Что видим</dt><dd>Одна кнопка «Согласен». Метрика, коллтрекинг и чат грузятся до согласия.</dd>
+    <dt>Что делаем</dt><dd class="do">Согласовать с юристом (похоже на риск по 152-ФЗ), добавить отказ или настройки.</dd></dl></article>
+  <article class="f i2" id="t2"><header><span class="code">Т2</span><h4>Изображения без alt</h4><i class="tag p2">Желательно</i></header>
+    <dl><dt>Что видим</dt><dd>9 на «Контактах», 6 на «О компании», по 2–3 на карточках продуктов.</dd>
+    <dt>Что делаем</dt><dd class="do">Заполнить alt в шаблонах и в админке.</dd></dl></article>
+</section>
+
+<div class="pfoot">Аудит сайта frontside.ru <b>Проблемы</b></div>
+
+<!-- ================= ЧАСТЬ 3 ================= -->
+<div class="part-head"><div class="ph-red cut"><svg class="arrow" viewBox="0 0 28 28" aria-hidden="true"><path d="M5 5L23 23M23 9V23H9"/></svg><span class="pn">Часть 3</span><h2>Предложение</h2><p>Что мы предлагаем сделать: принципы, схемы ключевых страниц и план работ.</p></div><div class="ph-pat" aria-hidden="true"></div></div>
+
+<section class="ch" id="principles">
+  <div class="ch-head"><span class="no">3.1</span><h3>Принципы</h3></div>
+  <div class="principles">
+    <div><b>Модули из брендбука — основа интерфейса</b>Карточки, кадры фото, плашки с заголовками и кнопки со скосом угла 45°, тонкие белые зазоры между модулями.</div>
+    <div><b>Паттерн как фон разделов</b>Серая сетка с ромбами на стыках — для разделителей, пустых состояний, подложек под логотипом.</div>
+    <div><b>Wix Madefor Display как веб-шрифт</b>Один фирменный шрифт для заголовков и текста, единая шкала размеров.</div>
+    <div><b>Логотипы категорий в каталоге</b>FRONTBASE, FRONTTOP, ARTLINE, UNIQUE, AESTHETIC — как в брендбуке. Для ARTVISION и LED их нужно разработать.</div>
+    <div><b>Фасад — главный герой</b>Крупные фото в полном разрешении, подпись «объект · система · цвет» под каждым кадром.</div>
+    <div><b>Факты и инструменты</b>Миллиметры, RAL, сроки вместо эпитетов. BIM, узлы, палитры и образцы — в один клик.</div>
+  </div>
+</section>
+
+<section class="ch" id="schemes">
+  <div class="ch-head"><span class="no">3.2</span><h3>Схемы страниц</h3></div>
+  <p class="wf-note">Схемы показывают структуру и приоритеты блоков, а не финальный визуал: шрифты, цвета и фото будут в дизайн-концепции. Цифры и характеристики взяты с текущего сайта. Номера в красных кружках расшифрованы под каждой схемой.</p>
+
+  <!-- A. Главная -->
+  <div class="scheme" id="wf-a">
+    <h4><span>A.</span> Главная</h4>
+    <p>Решает С1, С2, С3, С5, С6, Э1. Сначала объекты и смысл, потом доказательства и путь архитектора.</p>
+    <div class="wf-scroll"><div class="wf">
+      <div class="wf-bar"><i></i><i></i><i></i><span>frontside.ru</span></div>
+      <div class="wf-body">
+        <div class="whead">
+          <div class="wlogo"><img src="img/logo.svg" alt=""></div>
+          <div class="wnav"><span>Каталог</span><span class="on">Проекты</span><span class="on">Архитекторам</span><span>Услуги</span><span>О компании</span><span>Документы</span></div>
+          <span class="wl">☎ +7 495 …</span><span class="wbtn pri sm">Обсудить проект</span>
+          <span class="co" style="left:200px;top:-6px">1</span>
+        </div>
+        <div class="wsec" style="padding-top:0">
+          <div class="ph" style="height:330px;align-items:end;justify-items:start;padding:26px;border-radius:0 0 3px 3px">
+            <div class="wred cut" style="max-width:440px">
+              <div class="wl">Завод архитектурных фасадов · с 2001</div>
+              <div class="wt up" style="font-size:25px;margin:8px 0 10px">Тезис про архитектурные возможности, а не про панели</div>
+              <div class="st" style="margin-bottom:14px"><div class="ln" style="width:92%;background:rgba(255,255,255,.35)"></div><div class="ln" style="width:70%;background:rgba(255,255,255,.35)"></div></div>
+              <div class="row"><span class="wbtn" style="background:#fff;border-color:#fff;color:#231F20">Смотреть проекты</span><span class="wbtn" style="border-color:#fff;color:#fff">Обсудить проект</span></div>
+            </div>
+            <span class="wl" style="position:absolute;right:16px;bottom:12px;background:var(--wf-fill);padding:3px 6px">Объект · город · система · RAL</span>
+          </div>
+          <span class="co" style="left:14px;top:14px">2</span>
+        </div>
+        <div class="wsec">
+          <div class="g g4" style="border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 0">
+            <div><div class="wt" style="font-size:24px">3000+</div><div class="wl">объектов</div></div>
+            <div><div class="wt" style="font-size:24px">15 млн м²</div><div class="wl">фасадов произведено</div></div>
+            <div><div class="wt" style="font-size:24px">с 2001</div><div class="wl">свой завод</div></div>
+            <div><div class="wt" style="font-size:24px">до 10 лет</div><div class="wl">гарантия</div></div>
+          </div>
+          <span class="co" style="left:-25px;top:36px">3</span>
+        </div>
+        <div class="wsec">
+          <div class="row" style="justify-content:space-between;margin-bottom:12px"><div class="wt" style="font-size:18px">Технологии</div><span class="wl">Весь каталог →</span></div>
+          <div class="g g4">
+            <div><div class="ph" style="height:110px"><em>макро: рельеф</em></div><div class="cap"><span class="catlogo">ARTVISION</span><small>тиснение · логотип категории разработать</small></div><div class="row" style="margin-top:6px"><span class="wchip">3D-рельеф</span><span class="wchip">паттерн</span></div></div>
+            <div><div class="ph" style="height:110px"><em>макро: профиль</em></div><div class="cap"><span class="catlogo">UNIQUE</span> 2.0<small>профилирование</small></div><div class="row" style="margin-top:6px"><span class="wchip">теневые швы</span><span class="wchip">до 40 мм</span></div></div>
+            <div><div class="ph" style="height:110px"><em>макро: волна</em></div><div class="cap"><span class="catlogo">ARTLINE</span><small>облицовка</small></div><div class="row" style="margin-top:6px"><span class="wchip">до 6 000 мм</span><span class="wchip">PVDF</span></div></div>
+            <div><div class="ph" style="height:110px"><em>ночная съёмка</em></div><div class="cap"><span class="catlogo">LED</span><small>подсветка · логотип категории разработать</small></div><div class="row" style="margin-top:6px"><span class="wchip">RGB / белый</span><span class="wchip">IP68</span></div></div>
+          </div>
+          <span class="co" style="left:-25px;top:60px">4</span>
+        </div>
+        <div class="wsec">
+          <div class="row" style="justify-content:space-between;margin-bottom:10px"><div class="wt" style="font-size:18px">Проекты</div><div class="row"><span class="wchip on">Все</span><span class="wchip">ЦОД</span><span class="wchip">Спорт</span><span class="wchip">Ритейл</span><span class="wchip">Логистика</span></div></div>
+          <div class="g g3">
+            <div><div class="ph cut" style="height:120px"></div><div class="cap">Название объекта<small>Город · FRONTTOP · RAL</small></div></div>
+            <div><div class="ph cut" style="height:120px"></div><div class="cap">Название объекта<small>Город · UNIQUE · RAL</small></div></div>
+            <div><div class="ph cut" style="height:120px"></div><div class="cap">Название объекта<small>Город · ARTLINE · RAL</small></div></div>
+          </div>
+          <span class="co" style="left:-25px;top:60px">5</span>
+        </div>
+        <div class="wsec">
+          <div class="wdark">
+            <div class="row" style="justify-content:space-between;margin-bottom:14px"><div class="wt" style="font-size:18px">Архитекторам</div><span class="wbtn sm" style="border-color:var(--wf-on-dark);color:var(--wf-on-dark)">Раздел целиком →</span></div>
+            <div class="g g4">
+              <div><div class="wl">01</div><b style="font-size:12.5px">BIM и DWG</b></div>
+              <div><div class="wl">02</div><b style="font-size:12.5px">Палитры и фактуры</b></div>
+              <div><div class="wl">03</div><b style="font-size:12.5px">Заказать образец</b></div>
+              <div><div class="wl">04</div><b style="font-size:12.5px">Вебинары</b></div>
+            </div>
+          </div>
+          <span class="co" style="left:-25px;top:40px">6</span>
+        </div>
+        <div class="wsec">
+          <div class="g g2" style="align-items:end">
+            <div><div class="wt" style="font-size:18px;margin-bottom:8px">Обсудить проект</div><div class="row"><span class="wchip on">Я архитектор</span><span class="wchip">Застройщик</span><span class="wchip">Подрядчик</span></div></div>
+            <div class="g g3" style="align-items:end"><div class="wfield">Имя</div><div class="wfield">Телефон или почта</div><span class="wbtn pri">Отправить</span></div>
+          </div>
+          <span class="co" style="left:-25px;top:30px">7</span>
+        </div>
+      </div>
+    </div></div>
+    <ol class="callouts">
+      <li><span class="co">1</span><span><b>Меню.</b> «Проекты» и «Архитекторам» в главном меню, телефон иконкой, одна основная кнопка. (С1)</span></li>
+      <li><span class="co">2</span><span><b>Один первый экран.</b> Фото в полном разрешении и красная модульная плашка со скосом, как на обложках брендбука. (С2, Э1)</span></li>
+      <li><span class="co">3</span><span><b>Факты строкой</b> вместо коллажа плашек. (С3)</span></li>
+      <li><span class="co">4</span><span><b>Технологии</b> с логотипами категорий из брендбука, макросъёмкой и чипами параметров. (С7)</span></li>
+      <li><span class="co">5</span><span><b>Проекты сеткой</b> с фильтром по типологии и подписью системы. (С5, С9)</span></li>
+      <li><span class="co">6</span><span><b>Вход для архитектора</b> — тёмная полоса с четырьмя инструментами. (С8)</span></li>
+      <li><span class="co">7</span><span><b>Короткая форма</b> с выбором роли. (С6)</span></li>
+    </ol>
+  </div>
+
+  <!-- B. Продукт -->
+  <div class="scheme" id="wf-b">
+    <h4><span>B.</span> Карточка продукта (на примере ARTVISION)</h4>
+    <p>Решает С8, Д4. Справа всё, что нужно для проектирования; ниже — характеристики таблицей и реальные объекты.</p>
+    <div class="wf-scroll"><div class="wf">
+      <div class="wf-bar"><i></i><i></i><i></i><span>frontside.ru/catalog/artvision</span></div>
+      <div class="wf-body">
+        <div class="wl" style="margin:18px 0 6px">Главная — Каталог — ARTVISION</div>
+        <div class="g" style="grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:22px;position:relative">
+          <div>
+            <div class="ph" style="height:290px"><em>крупный кадр фасада с рельефом</em></div>
+            <div class="g g4" style="margin-top:8px"><div class="ph" style="height:52px"></div><div class="ph" style="height:52px"></div><div class="ph" style="height:52px"></div><div class="ph" style="height:52px"><em>видео</em></div></div>
+          </div>
+          <div>
+            <div class="wl">Технология тиснения</div>
+            <div class="wt" style="font-size:30px;margin:6px 0 10px">ARTVISION</div>
+            <div class="row" style="margin-bottom:12px"><span class="wchip">3D-рельеф</span><span class="wchip">сквозной рисунок</span><span class="wchip">паттерн</span></div>
+            <div class="st" style="margin-bottom:16px"><div class="ln" style="width:96%"></div><div class="ln" style="width:88%"></div><div class="ln" style="width:60%"></div></div>
+            <div class="wbox">
+              <div class="wl" style="margin-bottom:4px">Для проектировщика</div>
+              <div class="wdl">BIM-семейство<span>RVT · IFC</span></div>
+              <div class="wdl">Альбом узлов<span>DWG · PDF</span></div>
+              <div class="wdl">Технический лист<span>PDF</span></div>
+              <div class="wdl">Библиотека рисунков<span>PDF</span></div>
+              <div class="row" style="margin-top:12px"><span class="wbtn pri sm">Заказать образец</span><span class="wbtn sm">Обсудить проект</span></div>
+            </div>
+          </div>
+          <span class="co" style="right:-8px;top:200px">1</span>
+          <span class="co" style="left:-25px;top:10px">2</span>
+        </div>
+        <div class="wsec g g2" style="gap:28px">
+          <div style="position:relative">
+            <div class="wt" style="font-size:16px;margin-bottom:8px">Характеристики</div>
+            <div class="wtable">
+              <div>Глубина линии</div><div>до 2,5 мм</div>
+              <div>Мин. расстояние между линиями</div><div>30 мм</div>
+              <div>Отступ от края панели</div><div>70 мм</div>
+              <div>Совместимость</div><div>UNIQUE, FRONTTOP, FRONTBASE, AESTHETIC</div>
+              <div>Радиусные панели</div><div>нет</div>
+            </div>
+            <span class="co" style="left:-25px;top:-4px">3</span>
+          </div>
+          <div style="position:relative">
+            <div class="wt" style="font-size:16px;margin-bottom:8px">Цвет и фактура</div>
+            <div class="row" style="gap:6px;margin-bottom:10px"><div class="swatch" style="background:#d9d6cf"></div><div class="swatch" style="background:#8a8f93"></div><div class="swatch" style="background:#3b4045"></div><div class="swatch" style="background:#1f3a5f"></div><div class="swatch" style="background:#b4532a"></div><span class="wl">+ любой RAL</span></div>
+            <div class="ph" style="height:96px"><em>превью: рисунок × цвет</em></div>
+            <span class="co" style="left:-25px;top:-4px">4</span>
+          </div>
+        </div>
+        <div class="wsec" style="position:relative">
+          <div class="wt" style="font-size:16px;margin-bottom:10px">Объекты с ARTVISION</div>
+          <div class="g g3"><div class="ph" style="height:90px"></div><div class="ph" style="height:90px"></div><div class="ph" style="height:90px"></div></div>
+          <span class="co" style="left:-25px;top:20px">5</span>
+        </div>
+      </div>
+    </div></div>
+    <ol class="callouts">
+      <li><span class="co">1</span><span><b>«Для проектировщика»</b> — файлы и образец рядом с описанием, без перехода в «Документы». (С8)</span></li>
+      <li><span class="co">2</span><span><b>Крошки и заголовок</b> на одной линии сетки. (Д4)</span></li>
+      <li><span class="co">3</span><span><b>Характеристики таблицей.</b> Значения — с текущей страницы ARTVISION.</span></li>
+      <li><span class="co">4</span><span><b>Цвет и фактура:</b> палитра и превью сочетаний. Позже вырастает в конфигуратор.</span></li>
+      <li><span class="co">5</span><span><b>Реальные объекты</b> с этой системой вместо общего блока «Преимущества». (С3)</span></li>
+    </ol>
+  </div>
+
+  <!-- C. Проекты -->
+  <div class="scheme" id="wf-c">
+    <h4><span>C.</span> Проекты и кейс</h4>
+    <p>Решает С9, Э2. Портфолио как рабочий инструмент: найти похожий объект и посмотреть, как он сделан.</p>
+    <div class="wf-scroll"><div class="wf">
+      <div class="wf-bar"><i></i><i></i><i></i><span>frontside.ru/projects</span></div>
+      <div class="wf-body">
+        <div class="row" style="justify-content:space-between;margin:20px 0 12px;position:relative">
+          <div class="wt" style="font-size:30px">Проекты</div>
+          <div class="row"><span class="wchip">Система ▾</span><span class="wchip">Тип объекта ▾</span><span class="wchip">Цвет ▾</span><span class="wchip">Регион ▾</span><span class="wchip on">Сетка</span><span class="wchip">Карта</span></div>
+          <span class="co" style="right:-8px;top:-10px">1</span>
+        </div>
+        <div class="g g4" style="position:relative">
+          <div><div class="ph cut" style="height:120px"></div><div class="cap">Объект<small>Город · Система</small></div></div>
+          <div><div class="ph cut" style="height:120px"></div><div class="cap">Объект<small>Город · Система</small></div></div>
+          <div><div class="ph cut" style="height:120px"></div><div class="cap">Объект<small>Город · Система</small></div></div>
+          <div><div class="ph cut" style="height:120px"></div><div class="cap">Объект<small>Город · Система</small></div></div>
+          <span class="co" style="left:-25px;top:50px">2</span>
+        </div>
+      </div>
+    </div></div>
+    <div class="wf-scroll" style="margin-top:14px"><div class="wf">
+      <div class="wf-bar"><i></i><i></i><i></i><span>frontside.ru/projects/…</span></div>
+      <div class="wf-body" style="padding-top:20px">
+        <div class="ph" style="height:220px"><em>главный кадр объекта</em></div>
+        <div class="g" style="grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:26px;margin-top:18px">
+          <div style="position:relative">
+            <div class="wt" style="font-size:26px;margin-bottom:12px">Название объекта</div>
+            <div class="wl" style="margin-bottom:6px">Задача</div>
+            <div class="st" style="margin-bottom:14px"><div class="ln" style="width:95%"></div><div class="ln" style="width:80%"></div></div>
+            <div class="wl" style="margin-bottom:6px">Решение</div>
+            <div class="st" style="margin-bottom:14px"><div class="ln" style="width:92%"></div><div class="ln" style="width:85%"></div><div class="ln" style="width:50%"></div></div>
+            <div class="g g2"><div class="ph" style="height:90px"><em>узел (чертёж)</em></div><div class="ph" style="height:90px"><em>деталь (фото)</em></div></div>
+            <span class="co" style="left:-25px;top:120px">4</span>
+          </div>
+          <div style="position:relative">
+            <div class="wl" style="margin-bottom:6px">Паспорт объекта</div>
+            <div class="wtable">
+              <div>Архитектор</div><div>Бюро</div>
+              <div>Год</div><div>—</div>
+              <div>Площадь фасада</div><div>— м²</div>
+              <div>Системы</div><div>FRONTTOP, UNIQUE</div>
+              <div>Цвета</div><div>RAL …</div>
+              <div>Регион</div><div>—</div>
+            </div>
+            <div class="row" style="margin-top:12px"><span class="wbtn pri sm">Хочу такой фасад</span></div>
+            <span class="co" style="left:-25px;top:-4px">3</span>
+          </div>
+        </div>
+        <div class="wsec" style="position:relative"><div class="wt" style="font-size:15px;margin-bottom:8px">Похожие проекты</div><div class="g g4"><div class="ph" style="height:60px"></div><div class="ph" style="height:60px"></div><div class="ph" style="height:60px"></div><div class="ph" style="height:60px"></div></div>
+          <span class="co" style="left:-25px;top:30px">5</span></div>
+      </div>
+    </div></div>
+    <ol class="callouts">
+      <li><span class="co">1</span><span><b>Фильтры</b> по системе, типу, цвету, региону и переключатель «Сетка / Карта».</span></li>
+      <li><span class="co">2</span><span><b>Крупные превью</b> в 4 колонки на всю ширину. На 1920 первый ряд виден сразу. (Э2)</span></li>
+      <li><span class="co">3</span><span><b>Паспорт объекта:</b> бюро, год, площадь, системы, цвета. Упоминание бюро привлекает его коллег.</span></li>
+      <li><span class="co">4</span><span><b>Задача → решение → узел.</b> Комментарий архитектора о фасадном решении.</span></li>
+      <li><span class="co">5</span><span><b>Следующий шаг:</b> «Хочу такой фасад» и похожие проекты.</span></li>
+    </ol>
+  </div>
+
+  <!-- D. Архитекторам -->
+  <div class="scheme" id="wf-d">
+    <h4><span>D.</span> Раздел «Архитекторам»</h4>
+    <p>Решает С8, С10. Всё для проектирования в одном месте; текущий лендинг становится частью этого раздела.</p>
+    <div class="wf-scroll"><div class="wf">
+      <div class="wf-bar"><i></i><i></i><i></i><span>frontside.ru/architects</span></div>
+      <div class="wf-body">
+        <div style="padding:22px 0 16px;position:relative">
+          <div class="wt" style="font-size:30px;margin-bottom:12px">Архитекторам</div>
+          <div class="row"><div style="flex:1;max-width:460px;height:36px;border:1.5px solid var(--wf-stroke);border-radius:2px;display:flex;align-items:center;padding:0 12px;font-size:11px;color:var(--ink-2)">Найти узел, BIM-семейство, сертификат…</div><span class="wchip">FRONTTOP</span><span class="wchip">UNIQUE</span><span class="wchip">ARTVISION</span><span class="wchip">ARTLINE</span></div>
+          <span class="co" style="right:-8px;top:20px">1</span>
+        </div>
+        <div class="g g3" style="position:relative">
+          <div class="wbox"><div class="wl">01</div><b style="font-size:13px">BIM-библиотека</b><div class="wl" style="margin-top:4px">Revit · ArchiCAD · IFC</div></div>
+          <div class="wbox"><div class="wl">02</div><b style="font-size:13px">Альбом узлов</b><div class="wl" style="margin-top:4px">DWG · PDF</div></div>
+          <div class="wbox"><div class="wl">03</div><b style="font-size:13px">Палитры и фактуры</b><div class="wl" style="margin-top:4px">RAL · покрытия</div></div>
+          <div class="wbox"><div class="wl">04</div><b style="font-size:13px">Заказ образцов</b><div class="wl" style="margin-top:4px">доставка в бюро</div></div>
+          <div class="wbox"><div class="wl">05</div><b style="font-size:13px">Вебинары и записи</b><div class="wl" style="margin-top:4px">расписание</div></div>
+          <div class="wbox"><div class="wl">06</div><b style="font-size:13px">Консультация инженера</b><div class="wl" style="margin-top:4px">по узлам и АГР</div></div>
+          <span class="co" style="left:-25px;top:30px">2</span>
+        </div>
+        <div class="wsec" style="position:relative">
+          <div class="wdark g" style="grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:20px">
+            <div class="st" style="gap:12px">
+              <div class="wt" style="font-size:18px">Конфигуратор фасада</div>
+              <div><div class="wl">Система</div><div class="row" style="margin-top:4px"><span class="wchip on">FRONTTOP</span><span class="wchip" style="color:var(--wf-on-dark)">UNIQUE</span></div></div>
+              <div><div class="wl">Цвет RAL</div><div class="row" style="gap:5px;margin-top:4px"><div class="swatch" style="background:#d9d6cf"></div><div class="swatch" style="background:#3b4045"></div><div class="swatch" style="background:#b4532a"></div></div></div>
+              <div><div class="wl">Шов · рисунок · подсветка</div><div class="ln" style="margin-top:6px;width:80%"></div></div>
+              <span class="wbtn sm" style="justify-self:start;border-color:var(--wf-on-dark);color:var(--wf-on-dark)">Сохранить в PDF</span>
+            </div>
+            <div class="ph" style="min-height:190px;background-color:color-mix(in srgb,var(--wf-on-dark) 10%,transparent)"><em>превью фрагмента фасада</em></div>
+          </div>
+          <span class="co" style="left:-25px;top:30px">3</span>
+        </div>
+      </div>
+    </div></div>
+    <ol class="callouts">
+      <li><span class="co">1</span><span><b>Поиск по файлам</b> и быстрые фильтры по системам.</span></li>
+      <li><span class="co">2</span><span><b>Шесть инструментов.</b> Наполнение BIM — работа клиента, без неё раздел не заработает.</span></li>
+      <li><span class="co">3</span><span><b>Конфигуратор</b> — этап 3: система, цвет, шов, рисунок, подсветка → превью и PDF.</span></li>
+    </ol>
+  </div>
+
+  <!-- E. Мобильная -->
+  <div class="scheme" id="wf-e">
+    <h4><span>E.</span> Главная на телефоне</h4>
+    <p>Решает Э4, Э5. Одна колонка, ничего не выходит за край, главное действие всегда под пальцем.</p>
+    <div class="phone-wrap">
+      <div class="phone"><div class="ph-screen">
+        <div class="row" style="justify-content:space-between;height:46px;padding:0 14px;border-bottom:1px solid var(--line)"><div class="wlogo" style="width:24px"><img src="img/logo.svg" alt=""></div><div class="row" style="gap:14px"><span class="wl">☎</span><span class="wl">☰</span></div></div>
+        <div class="ph" style="height:250px;align-items:end;justify-items:start;padding:14px;border-radius:0">
+          <div style="background:var(--sheet);padding:12px;border-radius:2px;width:100%">
+            <div class="wt" style="font-size:17px;margin-bottom:8px">Тезис в две строки</div>
+            <span class="wbtn pri sm">Смотреть проекты</span>
+          </div>
+        </div>
+        <div class="g g2" style="padding:14px;gap:10px">
+          <div><div class="wt" style="font-size:17px">3000+</div><div class="wl">объектов</div></div>
+          <div><div class="wt" style="font-size:17px">15 млн м²</div><div class="wl">фасадов</div></div>
+        </div>
+        <div style="padding:0 14px"><div class="wt" style="font-size:14px;margin-bottom:8px">Технологии</div>
+          <div class="row" style="flex-wrap:nowrap;overflow:hidden;gap:8px"><div class="ph" style="width:120px;height:80px;flex:none"></div><div class="ph" style="width:120px;height:80px;flex:none"></div><div class="ph" style="width:40px;height:80px;flex:none"></div></div>
+        </div>
+        <div style="position:absolute;left:0;right:0;bottom:0;padding:10px 14px;background:var(--sheet);border-top:1px solid var(--line);display:flex;gap:8px"><span class="wbtn pri sm" style="flex:1;text-align:center">Обсудить проект</span><span class="wbtn sm">☎</span></div>
+        <span class="co" style="right:10px;top:60px">1</span>
+        <span class="co" style="right:10px;top:350px">2</span>
+        <span class="co" style="right:10px;bottom:56px">3</span>
+      </div></div>
+      <ol class="callouts" style="flex:1;min-width:240px;grid-template-columns:1fr;align-content:start">
+        <li><span class="co">1</span><span><b>Свой кадр для телефона</b>, без точек и счётчика слайдера, текст на подложке. (Э5)</span></li>
+        <li><span class="co">2</span><span><b>Горизонтальные ленты</b> прокручиваются внутри своей полосы, страница вбок не уезжает. (Э4)</span></li>
+        <li><span class="co">3</span><span><b>Нижняя панель</b> с главным действием и звонком вместо зелёного виджета. (Д6)</span></li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- F. Основа -->
+  <div class="scheme" id="wf-f">
+    <h4><span>F.</span> Основа дизайн-системы</h4>
+    <p>Решает Д1–Д5, Д8. Один набор правил на основе брендбука, из которого собираются все страницы.</p>
+    <div class="wf-scroll"><div class="wf">
+      <div class="wf-body" style="padding-top:22px">
+        <div class="wl" style="margin-bottom:8px">Сетка · 12 колонок · один контейнер и одни поля для всех шаблонов</div>
+        <div class="colgrid"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="g g3" style="margin-top:22px;gap:24px">
+          <div>
+            <div class="wl" style="margin-bottom:8px">Wix Madefor Display · шкала</div>
+            <div class="wt" style="font-size:30px">H1 · 64</div>
+            <div class="wt" style="font-size:22px;margin-top:6px">H2 · 40</div>
+            <div class="wt" style="font-size:16px;margin-top:6px">H3 · 24</div>
+            <div style="font-size:12px;margin-top:6px">Текст · 17 / 1,6</div>
+            <div class="wl" style="margin-top:6px">Подпись · 12 капс</div>
+          </div>
+          <div>
+            <div class="wl" style="margin-bottom:8px">Кнопки · три уровня</div>
+            <div class="st" style="gap:10px;justify-items:start"><span class="wbtn pri">Основная</span><span class="wbtn">Вторичная</span><span style="font-size:11px;font-weight:600;border-bottom:1.5px solid var(--ink)">Ссылка →</span></div>
+          </div>
+          <div>
+            <div class="wl" style="margin-bottom:8px">Общие детали</div>
+            <div class="st" style="gap:10px">
+              <div class="row"><span class="wchip on">Фильтр</span><span class="wchip">Фильтр</span></div>
+              <div class="wdl" style="border-top:1px solid var(--line-2)">Аккордеон<span>+</span></div>
+              <div class="row"><div class="swatch" style="background:#EF4836"></div><div class="swatch" style="background:#BBBDC0"></div><div class="swatch" style="background:#F1F1F1"></div><div class="swatch" style="background:#231F20"></div><span class="wl">4 цвета брендбука</span></div>
+              <div class="row"><div class="cut" style="width:70px;height:44px;background:#EF4836"></div><div class="wpat" style="width:70px;height:44px"></div><span class="wl">модуль · паттерн</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    <p style="font-size:14px;color:var(--ink-2);margin-top:10px">Размеры шкалы — пример для обсуждения. Финальные шрифты и значения — в дизайн-концепции.</p>
+  </div>
+</section>
+
+<section class="ch" id="plan">
+  <div class="ch-head"><span class="no">3.3</span><h3>План работ</h3></div>
+  <div class="stages">
+    <div class="stage"><span class="mono">Этап 1 · 1–2 недели</span><h4>Быстрые исправления</h4>
+      <ul><li>Исходники фото в нужном разрешении (Э1)</li><li>Телефон в шапке, «Проекты» в меню (С1)</li><li>Горизонтальный скролл (Э3, Э4)</li><li>Виджет чата, коллтрекинг (Д6, Э6)</li><li>Написание бренда, опечатки (Д7)</li><li>Cookie, alt (Т1, Т2)</li></ul></div>
+    <div class="stage"><span class="mono">Этап 2 · 4–6 недель</span><h4>Дизайн-система и ключевые страницы</h4>
+      <ul><li>Дизайн-концепция и UI-кит (схема F)</li><li>Главная (схема A)</li><li>Карточка продукта (схема B)</li><li>Проекты и кейс (схема C)</li><li>Мобильные версии (схема E)</li></ul></div>
+    <div class="stage"><span class="mono">Этап 3 · далее</span><h4>Сценарии для архитекторов</h4>
+      <ul><li>Раздел «Архитекторам» (схема D)</li><li>Наполнение BIM и узлов</li><li>Заказ образцов</li><li>Конфигуратор фасада</li><li>Остальные страницы на новой системе</li></ul></div>
+  </div>
+</section>
+
+<div class="pfoot">Аудит сайта frontside.ru <b>Предложение</b></div>
+
+<!-- ================= ПРИЛОЖЕНИЯ ================= -->
+<div class="part-head"><div class="ph-red cut"><svg class="arrow" viewBox="0 0 28 28" aria-hidden="true"><path d="M5 5L23 23M23 9V23H9"/></svg><span class="pn">Приложения</span><h2>Справочно</h2></div><div class="ph-pat" aria-hidden="true"></div></div>
+
+<section class="ch" id="all">
+  <div class="ch-head"><span class="no">А</span><h3>Все находки</h3></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Код</th><th>Находка</th><th>Приоритет</th><th>Схема</th></tr></thead>
+    <tbody>
+      <tr class="grp"><td colspan="4">Дизайн-система</td></tr>
+      <tr><td><a href="#d1">Д1</a></td><td>Два визуальных языка</td><td><i class="tag p0">Критично</i></td><td>F</td></tr>
+      <tr><td><a href="#d2">Д2</a></td><td>Фирменные шрифты не доходят до пользователя</td><td><i class="tag p0">Критично</i></td><td>F</td></tr>
+      <tr><td><a href="#d3">Д3</a></td><td>Две разные шапки</td><td><i class="tag p1">Важно</i></td><td>A, F</td></tr>
+      <tr><td><a href="#d4">Д4</a></td><td>Единая сетка и поля</td><td><i class="tag p1">Важно</i></td><td>B, F</td></tr>
+      <tr><td><a href="#d5">Д5</a></td><td>Единая система кнопок</td><td><i class="tag p1">Важно</i></td><td>F</td></tr>
+      <tr><td><a href="#d6">Д6</a></td><td>Виджет чата</td><td><i class="tag p1">Важно</i></td><td>E</td></tr>
+      <tr><td><a href="#d7">Д7</a></td><td>Название и тексты</td><td><i class="tag p1">Важно</i></td><td>—</td></tr>
+      <tr><td><a href="#d8">Д8</a></td><td>Аккордеоны</td><td><i class="tag p2">Желательно</i></td><td>F</td></tr>
+      <tr class="grp"><td colspan="4">Страницы</td></tr>
+      <tr><td><a href="#s1">С1</a></td><td>Телефон обрезан, «Проекты» вне главного меню</td><td><i class="tag p0">Критично</i></td><td>A</td></tr>
+      <tr><td><a href="#s2">С2</a></td><td>Первый экран главной</td><td><i class="tag p1">Важно</i></td><td>A</td></tr>
+      <tr><td><a href="#s3">С3</a></td><td>Коллаж «Преимущества»</td><td><i class="tag p1">Важно</i></td><td>A, B</td></tr>
+      <tr><td><a href="#s4">С4</a></td><td>Аккордеоны «Направления» и «Услуги»</td><td><i class="tag p2">Желательно</i></td><td>—</td></tr>
+      <tr><td><a href="#s5">С5</a></td><td>21 документ на главной</td><td><i class="tag p1">Важно</i></td><td>A</td></tr>
+      <tr><td><a href="#s6">С6</a></td><td>Форма заявки</td><td><i class="tag p2">Желательно</i></td><td>A</td></tr>
+      <tr><td><a href="#s7">С7</a></td><td>Каталог</td><td><i class="tag p2">Желательно</i></td><td>A</td></tr>
+      <tr><td><a href="#s8">С8</a></td><td>Продукт: файлы для проектирования</td><td><i class="tag p1">Важно</i></td><td>B, D</td></tr>
+      <tr><td><a href="#s9">С9</a></td><td>Портфолио: фильтры и данные проектов</td><td><i class="tag p0">Критично</i></td><td>C</td></tr>
+      <tr><td><a href="#s10">С10</a></td><td>Лендинг: навигация и наложения</td><td><i class="tag p1">Важно</i></td><td>D</td></tr>
+      <tr><td><a href="#s11">С11</a></td><td>Услуги, Решения, О компании</td><td><i class="tag p2">Желательно</i></td><td>—</td></tr>
+      <tr><td><a href="#s12">С12</a></td><td>Документы, Новости, Контакты</td><td><i class="tag p2">Желательно</i></td><td>—</td></tr>
+      <tr class="grp"><td colspan="4">Экраны и скорость</td></tr>
+      <tr><td><a href="#e1">Э1</a></td><td>Растянутые фото</td><td><i class="tag p0">Критично</i></td><td>A</td></tr>
+      <tr><td><a href="#e2">Э2</a></td><td>Пропорции на 1920</td><td><i class="tag p1">Важно</i></td><td>C</td></tr>
+      <tr><td><a href="#e3">Э3</a></td><td>Скролл на 1440</td><td><i class="tag p1">Важно</i></td><td>—</td></tr>
+      <tr><td><a href="#e4">Э4</a></td><td>Мобильный скролл вбок</td><td><i class="tag p0">Критично</i></td><td>E</td></tr>
+      <tr><td><a href="#e5">Э5</a></td><td>Мобильный первый экран</td><td><i class="tag p0">Критично</i></td><td>E</td></tr>
+      <tr><td><a href="#e6">Э6</a></td><td>Скорость</td><td><i class="tag p1">Важно</i></td><td>—</td></tr>
+      <tr class="grp"><td colspan="4">Доступность и право</td></tr>
+      <tr><td><a href="#t1">Т1</a></td><td>Cookie без отказа</td><td><i class="tag p1">Важно</i></td><td>—</td></tr>
+      <tr><td><a href="#t2">Т2</a></td><td>Нет alt</td><td><i class="tag p2">Желательно</i></td><td>—</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section class="ch" id="limits">
+  <div class="ch-head"><span class="no">Б</span><h3>Ограничения аудита</h3></div>
+  <article class="f"><header><h4>Измерено</h4></header><dl><dt>Факты</dt><dd>Сверка с брендбуком сделана по PDF «2025_FrontSide_BB». Шрифты, цвета, положения элементов, ширина страниц, размеры исходников фото, файлы без alt — сняты из кода страниц в браузере. Скорость измерена один раз на десктопе; для надёжной цифры нужны PageSpeed и данные реальных пользователей.</dd></dl></article>
+  <article class="f"><header><h4>Экспертная оценка</h4></header><dl><dt>Мнение</dt><dd>Баллы, приоритеты, оценки новизны и выразительности, схемы и рекомендации. Аналитики, конверсий, записей сессий и интервью с архитекторами у нас не было — приоритеты стоит сверить с метриками клиента.</dd></dl></article>
+  <article class="f"><header><h4>Не проверено</h4></header><dl><dt>Пробелы</dt><dd>Ширины 1024, 1280, 1536 и 2560 px, настоящий Safari на iPhone, отправка форм, контраст по WCAG, SEO, поиск и карта. «Производство», «Вакансии», «Карта проектов» и часть карточек продуктов просмотрены бегло. Причина обрезанного телефона, происхождение фото и точное число проектов — не проверены.</dd></dl></article>
+</section>
+
+<div class="pfoot">Аудит сайта frontside.ru <b>Приложения</b></div>
+
+<footer class="end">
+  <span>Методика: 21 страница на 1440 и 390 px, 12 ключевых на 1920, сверка с брендбуком FRONTSIDE 2025, замеры в браузере, экспертная оценка.</span>
+  <span class="mono">frontside.ru · 01.10.2026</span>
+</footer>
+
+</main>
+</div>
+<script>
+(function(){
+  var links=[].slice.call(document.querySelectorAll('.side a[href^="#"]'));
+  var secs=links.map(function(a){return document.getElementById(a.getAttribute('href').slice(1))});
+  var cur=-1, ticking=false;
+  function update(){
+    ticking=false;
+    var line=window.innerHeight*0.3, idx=0;
+    for(var i=0;i<secs.length;i++){ if(secs[i] && secs[i].getBoundingClientRect().top<=line) idx=i; }
+    if((window.innerHeight+window.scrollY)>=document.documentElement.scrollHeight-4) idx=secs.length-1;
+    if(idx===cur) return; cur=idx;
+    links.forEach(function(a,i){
+      a.classList.toggle('is-active',i===idx);
+      if(i===idx) a.setAttribute('aria-current','location'); else a.removeAttribute('aria-current');
+    });
+  }
+  window.addEventListener('scroll',function(){ if(!ticking){ticking=true;requestAnimationFrame(update);} },{passive:true});
+  window.addEventListener('resize',update);
+  update();
+})();
+</script>
+
+</body>
+</html>
